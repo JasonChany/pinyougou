@@ -1,6 +1,7 @@
 package com.pinyougou.sellergoods.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,11 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.itheima.sellergoods.service.BrandService;
 import com.pinyougou.mapper.TbBrandMapper;
 import com.pinyougou.pojo.TbBrand;
 import com.pinyougou.pojo.TbBrandExample;
 import com.pinyougou.pojo.TbBrandExample.Criteria;
+import com.pinyougou.sellergoods.service.BrandService;
 
 import entity.PageResult;
 import entity.Result;
@@ -75,6 +76,11 @@ public class BrandServiceImpl implements BrandService {
 		//开始查询
 		Page<TbBrand> page = (Page<TbBrand>) brandMapper.selectByExample(brandExample);
 		return new PageResult(page.getTotal(), page.getResult());
+	}
+
+	@Override
+	public List<Map> selectOptionList() {
+		return brandMapper.selectOptionList();
 	}
 
 }

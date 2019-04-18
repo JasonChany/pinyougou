@@ -1,6 +1,7 @@
-package com.itheima.sellergoods.service;
+package com.pinyougou.sellergoods.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.pinyougou.pojo.TbBrand;
 
@@ -61,5 +62,11 @@ public interface BrandService {
 	 * @return
 	 */
 	PageResult findPageByCondition(TbBrand brand,Integer pageNum,Integer pageSize);
+	
+	/**
+	 * 品牌列表
+	 * @return
+	 */
+	List<Map> selectOptionList();
 
 }

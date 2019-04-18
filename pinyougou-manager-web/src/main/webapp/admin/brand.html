@@ -8,114 +8,20 @@
     <link rel="stylesheet" href="../plugins/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../plugins/adminLTE/css/AdminLTE.css">
     <link rel="stylesheet" href="../plugins/adminLTE/css/skins/_all-skins.min.css">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../plugins/angularjs/pagination.css">
+    <link rel="stylesheet" href="../css/style.css">    
 	<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- AngularJS -->
     <script src="../plugins/angularjs/angular.min.js"></script>
+    <!-- 分页插件开始 -->
+    <link rel="stylesheet" href="../plugins/angularjs/pagination.css">
     <script src="../plugins/angularjs/pagination.js"></script>
+    <!-- 分页插件结束 -->
     
-    <script type="text/javascript">
-    	var app=angular.module("pinyougou",['pagination']);
-    	
-    	app.controller("brandController",function($scope,$http){
-    		//查询所有品牌
-    		$scope.findAll=function(){
-    			$http.get("/brand/findAll.do").success(function(response){
-        			$scope.brandList=response;
-        		})
-    		};    	
-    		
-    		//重新加载列表（把分页查询的函数进行封装便于重复调用，如下方分页插件配置中改变配置时就要调用分页查询）
-    		$scope.reloadList=function(){
-    			$scope.search($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
-    		};
-    		
-    		//分页查询
-    		$scope.findPage=function(pageNum,pageSize){
-    			$http.get("/brand/findPage.do?pageNum="+pageNum+"&pageSize="+pageSize).success(function(response){
-    				//绑定数据
-    				$scope.brandList=response.rows;
-    				//更新总记录数
-    				$scope.paginationConf.totalItems=response.total
-    			});
-    		};
-    		
-    		//分页插件配置
-    		$scope.paginationConf={
-    				currentPage: 1,
-    				totalItems: 10,
-    				itemsPerPage: 10,
-    				perPageOptions: [10, 20, 30, 40, 50],
-    				onChange: function(){
-    					$scope.reloadList();//重新加载（本质是调用分页查询的函数）
-    				}
-    		};
-    		
-    		//新增（修改）品牌
-    		$scope.save=function(){
-    			var methodName="add";
-    			if($scope.entity.id!=null){
-    				methodName="update";
-    			}
-    			$http.post("/brand/"+methodName+".do",$scope.entity).success(function(response){
-    				if(response.success){
-    					//新增(修改)成功（重新加载列表）
-    					alert(response.message);
-    					$scope.reloadList();
-    				}else{
-    					//新增（修改）失败
-    					alert(response.message);
-    				}
-    			})
-    		};
-    		
-    		//修改品牌回显品牌信息
-    		$scope.findOne=function(id){
-    			$http.get("/brand/findOne.do?id="+id).success(function(response){
-    				$scope.entity=response;
-    			})
-    		};
-    		
-    		//更新选择框
-    		$scope.selectList=[];//定义数组
-    		$scope.updateSelection=function($event,id){
-    			if($event.target.checked){
-    				//复选框被选中（向数组添加id）
-    				$scope.selectList.push(id);
-    			}else{
-    				//复选框未选中（获取该id在数组中的位置并从数组中移除）
-    				var index=$scope.selectList.indexOf(id);//获取该id在数组中的位置
-    				$scope.selectList.splice(index,1)//第二个参数表示移除几个元素
-    			}
-    		};
-    		//删除品牌
-    		$scope.dele=function(){
-    			if(confirm("你确定要删除吗？")){
-    				$http.get("/brand/delete.do?ids="+$scope.selectList).success(function(response) {
-    					if(response.success){
-    						alert(response.message);
-    						$scope.reloadList();
-    					}else{
-    						alert(response.message);
-    					}
-    				});
-    			}    			
-    		};
-    		
-    		//分页条件查询
-    		$scope.searchEntity={};
-    		$scope.search=function(pageNum,pageSize){
-    			$http.post("/brand/search.do?pageNum="+pageNum+"&pageSize="+pageSize,$scope.searchEntity).success(function(response) {
-    				//绑定数据
-    				$scope.brandList=response.rows;
-    				//更新总记录数
-    				$scope.paginationConf.totalItems=response.total
-				});
-    		}
-    		
-    	});
-    </script>
+   <script src="../js/base_pagination.js"></script>
+   <script src="../js/service/brandService.js"></script>
+   <script src="../js/controller/baseController.js"></script>   
+   <script src="../js/controller/brandController.js"></script>
 
     
 </head>
@@ -163,7 +69,7 @@
 			                          </tr>
 			                      </thead>
 			                      <tbody>
-			                          <tr ng-repeat="brand in brandList">
+			                          <tr ng-repeat="brand in list">
 			                              <td><input  type="checkbox" ng-click="updateSelection($event,brand.id)"></td>			                              
 				                          <td>{{brand.id}}</td>
 									      <td>{{brand.name}}</td>									     
