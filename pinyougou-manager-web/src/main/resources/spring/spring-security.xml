@@ -4,5 +4,37 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
+		<!-- 配置不拦截资源 -->
+		<http security="none" pattern="/login.html"></http>
+		<http security="none" pattern="/css/**"></http>
+		<http security="none" pattern="/img/**"></http>
+		<http security="none" pattern="/js/**"></http>
+		<http security="none" pattern="/plugins/**"></http>
+			
+		<!-- 配置拦截资源 -->
+		<http use-expressions="false">
+			<intercept-url pattern="/**" access="ROLE_ADMIN"/>
+			<!-- 自定义登陆页面 -->
+			<form-login login-page="/login.html" default-target-url="/admin/index.html"
+						authentication-failure-url="/login.html" always-use-default-target="true"/>
+			<!-- 关闭跨域访问(crsf) -->
+			<csrf disabled="true"/>
+			<!-- 设置前端框架策略为“SAMEORIGIN”（否则登陆成功无法正常显示页面框架(iFrame)内的内容） -->
+			<headers>
+				<frame-options policy="SAMEORIGIN"/>
+			</headers>
+			<!-- 退出 -->
+			<logout invalidate-session="true" logout-success-url="/login.html"/>
+		</http>
+		
+		<!-- 认证管理器 -->
+		<authentication-manager>
+			<authentication-provider>
+				<user-service>
+					<user name="admin" password="123456" authorities="ROLE_ADMIN"/>					
+					<user name="sunwukong" password="dasheng" authorities="ROLE_ADMIN"/>					
+				</user-service>
+			</authentication-provider>
+		</authentication-manager>
 		
 </beans:beans>
