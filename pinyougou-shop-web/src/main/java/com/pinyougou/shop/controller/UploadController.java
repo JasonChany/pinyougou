@@ -29,7 +29,7 @@ public class UploadController {
 			//创建FastDFS客户端
 			FastDFSClient dfsClient = new FastDFSClient("classpath:config/fdfs_client.conf");
 			//执行上传(返回服务器文件路径)
-			String path= dfsClient.uploadFile(filename.getBytes(), extName);
+			String path= dfsClient.uploadFile(file.getBytes(), extName);
 			//拼接服务器地址与文件服务器路径
 			String url=FILE_SERVER_URL+path;
 			System.out.println(url);

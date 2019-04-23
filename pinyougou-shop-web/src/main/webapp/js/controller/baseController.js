@@ -30,4 +30,14 @@ app.controller('baseController' ,function($scope){
 		}
 	}
 	
+	//从集合中查询指定key的对象
+	$scope.searchObjectByKey=function(list,key,keyValue){
+		for (var i = 0; i < list.length; i++) {
+			if (list[i][key]==keyValue) {
+				return list[i];
+			}
+		}
+		return null;
+	}
+	
 });	

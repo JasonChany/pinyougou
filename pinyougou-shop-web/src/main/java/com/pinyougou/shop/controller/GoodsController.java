@@ -68,7 +68,14 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/update")
-	public Result update(@RequestBody TbGoods goods){
+	public Result update(@RequestBody Goods goods){
+		//校验是否是当前商家
+		Goods goods2 = goodsService.findOne(goods.getGoods().getId());
+		//当前登录商家
+		String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+		if(!goods2.getGoods().getSellerId().equals(sellerId)|| !goods.getGoods().getSellerId().equals(sellerId) ){
+				return new Result(false, "操作非法");
+			}
 		try {
 			goodsService.update(goods);
 			return new Result(true, "修改成功");
@@ -84,7 +91,7 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbGoods findOne(Long id){
+	public Goods findOne(Long id){
 		return goodsService.findOne(id);		
 	}
 	
@@ -113,8 +120,26 @@ public class GoodsController {
 	 */
 	@RequestMapping("/search")
 	public PageResult search(@RequestBody TbGoods goods, int page, int rows  ){
+		//设置仅查询当前登陆商家的商品信息
+		String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+		goods.setSellerId(sellerId);
 		return goodsService.findPage(goods, page, rows);		
 	}
 	
-	
+	/**
+	 * 商品上架与下架
+	 * @param ids
+	 * @param marketable
+	 * @return
+	 */
+	@RequestMapping("/updateMarketable")
+	public Result updateMarketable(Long[] ids,String marketable) {
+		try {
+			goodsService.updateMarkeyable(ids, marketable);
+			return new Result(true, "操作成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "操作失败");
+		}
+	}
 }
