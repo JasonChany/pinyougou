@@ -9,6 +9,10 @@
   
   <dependencies>
   	<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-jdbc</artifactId>
+	  </dependency>
+  	<dependency>
 	    <groupId>com.github.pagehelper</groupId>
 	    <artifactId>pagehelper</artifactId>	   
 	</dependency>		
@@ -41,5 +45,6 @@
 		<artifactId>pinyougou-pojo</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</dependency>
+	
   </dependencies>
 </project>
