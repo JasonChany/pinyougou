@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.dubbo.common.json.JSON;
@@ -34,6 +35,8 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 	private TbTypeTemplateMapper typeTemplateMapper;
 	@Autowired
 	private TbSpecificationOptionMapper specificationOptionMapper;
+	@Autowired
+	private RedisTemplate redisTemplate;
 	
 	/**
 	 * 查询全部
@@ -114,7 +117,10 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 	
 		}
 		
-		Page<TbTypeTemplate> page= (Page<TbTypeTemplate>)typeTemplateMapper.selectByExample(example);		
+		Page<TbTypeTemplate> page= (Page<TbTypeTemplate>)typeTemplateMapper.selectByExample(example);
+		
+		//更新缓存：每次调用商品模板查询都会执行该方法
+		saveToRedis();
 		return new PageResult(page.getTotal(), page.getResult());
 	}
 
@@ -137,6 +143,21 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 			}
 			
 			return list;
+		}
+		
+		/**
+		 * 更新品牌和规格列表的缓存
+		 */
+		private void saveToRedis() {
+			List<TbTypeTemplate> list = findAll();
+			for (TbTypeTemplate typeTemplate : list) {
+				//更新品牌列表缓存
+				List<Map> brandList = com.alibaba.fastjson.JSON.parseArray(typeTemplate.getBrandIds(),Map.class);//获取品牌列表(json字符串)将转换为Map集合
+				redisTemplate.boundHashOps("brandList").put(typeTemplate.getId(), brandList);
+				//更新规格列表缓存（包含规格选项）
+				List<Map> specList = findSpecList(typeTemplate.getId());//根据模板ID查询规格选项列表
+				redisTemplate.boundHashOps("specList").put(typeTemplate.getId(),specList);
+			}
 		}
 	
 }
