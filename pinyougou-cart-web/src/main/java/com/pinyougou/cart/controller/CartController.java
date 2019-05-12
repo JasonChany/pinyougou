@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -69,6 +70,7 @@ public class CartController {
 		
 	}
 	@RequestMapping("/addGoodsToCartList")
+	@CrossOrigin(origins="http://localhost:9105",allowCredentials="true")//允许跨域请求，并支持获取Cookie（默认）
 	public Result addGoodsToCartList(Long itemId,Integer num) {
 		//获取当前登陆人
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
