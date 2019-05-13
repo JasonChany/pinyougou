@@ -23,8 +23,17 @@ public class TbPayLog implements Serializable {
     private String payType;
 
     private static final long serialVersionUID = 1L;
+    
+    
 
-    public String getOutTradeNo() {
+    @Override
+	public String toString() {
+		return "TbPayLog [outTradeNo=" + outTradeNo + ", createTime=" + createTime + ", payTime=" + payTime
+				+ ", totalFee=" + totalFee + ", userId=" + userId + ", transactionId=" + transactionId + ", tradeState="
+				+ tradeState + ", orderList=" + orderList + ", payType=" + payType + "]";
+	}
+
+	public String getOutTradeNo() {
         return outTradeNo;
     }
 
