@@ -31,7 +31,8 @@ app.controller('payController',function($scope,$location,payService){
 				}else{
 					//支付失败（跳转到失败页面）
 					if (response.message=='二维码超时') {
-						$scope.createNative();//重新生成二维码
+						//$scope.createNative();//重新生成二维码
+						alert(response.message);
 					}else{
 						location.href="payfail.html";
 					}
